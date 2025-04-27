@@ -1,11 +1,17 @@
 package msu.ru.webprac.dao.impl;
 
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import msu.ru.webprac.dao.LectureDAO;
 import msu.ru.webprac.db.Lectures;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public class LectureDAOimpl extends AbstractDAO<Lectures, Long> implements LectureDAO {

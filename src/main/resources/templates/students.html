@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Студенты</title>
+</head>
+<body>
+
+<div class="topnav">
+    <a href="index">Домашняя страница</a>
+    <a href="schedule">Расписание</a>
+    <a href="courses">Курсы</a>
+    <a class="active" href="students">Студенты</a>
+    <a href="professors">Лекторы</a>
+    <a href="universities">Университеты</a>
+</div>
+
+<div class="table_style">
+    <form method="get" action="/add_student">
+        <button id="add_student" type="submit" class="btn btn-primary">Добавить студента</button>
+    </form>
+    <br>
+
+    <table class="table table-bordered table-warning">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Фамилие</th>
+            <th scope="col"> Имя</th>
+            <th scope="col"> Отчество</th>
+            <th scope="col"> Дата рождения</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${students.isEmpty()}">
+            <td colspan="6"> В базе пока нет ни одного студента.
+                <form method="get" action="/add_student">
+                    <button id="add_student2" type="submit" class="btn btn-primary">Добавить?</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:id="student" th:each="student : ${students}">
+            <td>
+                <a th:href="'/student?id=' + ${student.getId()}">
+                    <span th:text="${student.getSurname()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:id="student_name" th:href="'/student?id=' + ${student.getId()}">
+                    <span th:text="${student.getName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/student?id=' + ${student.getId()}">
+                    <span th:text="${student.getPatronymic()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/student?id=' + ${student.getId()}">
+                    <span th:text="${student.getDate().toString()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/edit_student?id=' + ${student.getId()}">
+                    <span th:text="'Ред.'"> </span>
+                </a>
+            </td>
+            <td>
+                <form method="post" action="/remove_student">
+                    <input type="hidden" name="id" th:value="${student.getId()}"/>
+                    <button id="deleteButton" type="submit" class="btn btn-secondary">X</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

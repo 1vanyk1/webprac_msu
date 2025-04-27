@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Информация о студенте</title>
+</head>
+<body>
+
+<div class="topnav">
+    <a href="index">Домашняя страница</a>
+    <a href="schedule">Расписание</a>
+    <a href="courses">Курсы</a>
+    <a class="active" href="students">Студенты</a>
+    <a href="professors">Лекторы</a>
+    <a href="universities">Университеты</a>
+</div>
+
+<div class="table_style">
+    <a><b>Имя: </b></a>
+    <a><span th:text="${student.getName()}"> </span></a>
+    <br>
+    <a><b>Фамилия: </b></a>
+    <a><span th:text="${student.getSurname()}"> </span></a>
+    <br>
+    <a><b>Отчество: </b></a>
+    <a><span id="student_patronymic" th:text="${student.getPatronymic()}"> </span></a>
+    <br>
+    <a><b>Дата рождения: </b></a>
+    <a><span th:text="${student.getDate().toString()}"> </span></a>
+    <br>
+
+    <form method="get" action="/edit_student">
+        <input type="hidden" name="id" th:value="${student.getId()}"/>
+        <button id="edit_student" type="submit" class="btn btn-primary">Редактировать</button>
+    </form>
+    <form method="get" action="/remove_student">
+        <input type="hidden" name="id" th:value="${student.getId()}"/>
+        <button id="remove_student" type="submit" class="btn btn-primary">Удалить</button>
+    </form>
+</div>
+<div>
+    <br>
+    <a><b>Записанные курсы:</b></a>
+    <br>
+
+    <form method="post" th:object="${student_course}" th:action="@{/student_add_course}">
+        <input type="hidden" id="student_id" name="student_id" th:field="*{student_id}" required readonly th:value="${student_course.getStudent_id()}">
+        <label for="course_id">Курс:</label>
+        <select class="form-control" id="course_id" th:field="*{course_id}" required>
+            <option th:value="${null}">Не выбран</option>
+            <option th:each="course : ${all_courses}" th:value="${course.id}" th:text="${course.name}"></option>
+        </select>
+        <br>
+        <input id="submitButton" type="submit" value="Добавить курс" class="btn btn-primary">
+    </form>
+</div>
+<div>
+    <table class="table table-bordered table-warning">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Название курса</th>
+            <th scope="col"> Продолжительность (в часах)</th>
+            <th scope="col"> Завершён</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${courses.isEmpty()}">
+            <td colspan="6">Нет курсов</td>
+        </tr>
+        <tr th:each="course : ${courses}">
+            <td>
+                <a th:id="course_name" th:href="'/course?id=' + ${course.getId()}">
+                    <span th:text="${course.getName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/course?id=' + ${course.getId()}">
+                    <span th:text="${course.getDuration()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/course?id=' + ${course.getId()}">
+                    <span th:if="${course.getEnded()}" th:text="'Да'"> </span>
+                    <span th:else th:text="'Нет'"> </span>
+                </a>
+            </td>
+            <td>
+                <form method="post" action="/remove_student_from_course">
+                    <input type="hidden" id="student_id2" name="student_id" th:value="${student.getId()}"/>
+                    <input type="hidden" id="course_id2" name="course_id" th:value="${course.getId()}"/>
+                    <button id="deleteButton" type="submit" class="btn btn-secondary">X</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<br><br>
+
+<div class="table_style">
+    <form method="post" th:object="${time_interval}" th:action="@{/student}">
+        <input type="hidden" name="id" th:value="${student.getId()}"/>
+
+        <label for="ti_from">От:</label>
+        <input type="date" id="ti_from" name="ti_from" th:field="*{from}" th:value="${time_interval.getFrom()}">
+
+        <label for="ti_to">До:</label>
+        <input type="date" id="ti_to" name="ti_to" th:field="*{to}" th:value="${time_interval.getTo()}">
+
+        <input id="ti_submitButton" type="submit" value="Фильтровать" class="btn btn-primary">
+    </form>
+
+    <table class="table table-bordered table-warning">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Дата</th>
+            <th scope="col"> Время</th>
+            <th scope="col"> Курс</th>
+            <th scope="col"> Лектор</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${lectures.isEmpty()}">
+            <td colspan="6" id="no_lectures">На данный период нет ни одного занятия</td>
+        </tr>
+        <tr th:each="lecture : ${lectures}">
+            <td>
+                <a id="lecture_date">
+                    <span th:text="${lecture.getDate()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a>
+                    <span th:text="${lecture.getTimeInterval()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/course?id=' + ${lecture.getCourse().getId()}">
+                    <span th:text="${lecture.getCourse().getName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/professor?id=' + ${lecture.getProfessor().getId()}">
+                    <span th:text="${lecture.getProfessor().getFullName()}"> </span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>

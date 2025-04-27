@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Редактировать информацию о лекции</title>
+</head>
+<body>
+
+<div class="table_style">
+    <form method="post" th:object="${lecture}" th:action="@{/save_lecture}">
+        <input type="hidden" id="lecture_id" name="lecture_id" th:field="*{id}" required readonly th:value="${lecture.getId()}">
+
+        <label for="course">Курс:</label>
+        <select class="form-control" id="course" th:field="*{course.id}" required>
+            <option th:value="${null}">Выберите курс</option>
+            <option th:each="cour : ${courses}" th:value="${cour.id}" th:text="${cour.name}"></option>
+        </select><br><br>
+
+        <label for="professor">Лектор:</label>
+        <select class="form-control" id="professor" th:field="*{professor.id}" required>
+            <option th:value="${null}">Выберите лектора</option>
+            <option th:each="prof : ${professors}" th:value="${prof.id}" th:text="${prof.getFullName()}"></option>
+        </select><br><br>
+
+        <label for="lecture_date">Дата:</label>
+        <input type="date" id="lecture_date" name="lecture_date" th:field="*{date}" required th:value="${lecture.getDate()}"><br><br>
+
+        <label for="lecture_time">Время:</label>
+        <input type="time" id="lecture_time" name="lecture_time" th:field="*{time}" required th:value="${lecture.getTime()}"><br><br>
+        
+        <label for="lecture_duration">Продолжительность:</label>
+        <input type="number" id="lecture_duration" name="lecture_duration" th:field="*{duration}" required th:value="${lecture.getDuration()}"><br><br>
+
+        <input id="submitButton" type="submit" value="Сохранить" class="btn btn-primary">
+    </form>
+</div>
+
+</body>
+</html>

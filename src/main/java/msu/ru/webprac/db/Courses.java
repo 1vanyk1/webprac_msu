@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "courses")
-public class Courses implements ListBase<Courses, Long> {
+public class Courses implements ListBase<Courses, Long>, Comparable<Courses> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "course_id")
@@ -107,5 +107,16 @@ public class Courses implements ListBase<Courses, Long> {
 
     public void setStudents(Set<Students> students) {
         this.students = students;
+    }
+
+    @Override
+    public int compareTo(Courses other) {
+        int tmp = this.ended.compareTo(other.ended);
+        if (tmp != 0)
+            return tmp;
+        tmp = this.name.compareTo(other.name);
+        if (tmp != 0)
+            return tmp;
+        return this.id.compareTo(other.id);
     }
 }

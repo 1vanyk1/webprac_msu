@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Курсы</title>
+</head>
+<body>
+
+<div class="topnav">
+    <a href="index">Домашняя страница</a>
+    <a href="schedule">Расписание</a>
+    <a class="active" href="courses">Курсы</a>
+    <a href="students">Студенты</a>
+    <a href="professors">Лекторы</a>
+    <a href="universities">Университеты</a>
+</div>
+
+<div class="table_style">
+    <form method="get" action="/add_course">
+        <button id="add_course" type="submit" class="btn btn-primary">Добавить курс</button>
+    </form>
+    <br>
+
+    <table class="table table-bordered table-warning">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Название курса</th>
+            <th scope="col"> Продолжительность (в часах)</th>
+            <th scope="col"> Завершён</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${courses.isEmpty()}">
+            <td colspan="6"> В базе пока нет ни одного курса.
+                <form method="get" action="/add_course">
+                    <button id="add_course2" type="submit" class="btn btn-primary">Добавить?</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:id="course" th:each="course : ${courses}">
+            <td>
+                <a th:id="course_name" th:href="'/course?id=' + ${course.getId()}">
+                    <span th:text="${course.getName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/course?id=' + ${course.getId()}">
+                    <span th:text="${course.getDuration()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/course?id=' + ${course.getId()}">
+                    <span th:if="${course.getEnded()}" th:text="'Да'"> </span>
+                    <span th:else th:text="'Нет'"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:id="edit_course" th:href="'/edit_course?id=' + ${course.getId()}">
+                    <span th:text="'Ред.'"> </span>
+                </a>
+            </td>
+            <td>
+                <form method="post" action="/remove_course">
+                    <input type="hidden" name="id" th:value="${course.getId()}"/>
+                    <button id="deleteButton" type="submit" class="btn btn-secondary">X</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

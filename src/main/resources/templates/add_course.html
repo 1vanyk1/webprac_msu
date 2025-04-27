@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Добавление курса</title>
+</head>
+<body>
+
+<div class="table_style">
+    <form id="course" method="post" th:object="${course}" th:action="@{/save_course}">
+        <input type="hidden" id="course_id" name="course_id" th:field="*{id}" required readonly th:value="${course.getId()}">
+
+        <label for="course_name">Название:</label>
+        <input type="text" id="course_name" name="course_name" th:field="*{name}" required th:value="${course.getName()}"><br><br>
+
+        <label for="course_description">Описание:</label>
+        <input type="text" id="course_description" name="course_description" th:field="*{description}" th:value="${course.getDescription()}"><br><br>
+
+        <label for="course_duration">Продолжительность:</label>
+        <input type="number" id="course_duration" name="course_duration" th:field="*{duration}" required th:value="${course.getDuration()}"><br><br>
+
+        <label for="course_ended">Завершён:</label>
+        <input type="checkbox" id="course_ended" name="course_ended" th:field="*{ended}" th:value="${course.getEnded()}"><br><br>
+
+        <input id="submitButton" type="submit" value="Сохранить" class="btn btn-primary">
+    </form>
+</div>
+
+
+</body>
+</html>

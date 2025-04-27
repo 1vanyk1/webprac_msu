@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Редактировать информацию о университете</title>
+</head>
+<body>
+
+<div class="table_style">
+    <form method="post" th:object="${university}" th:action="@{/save_university}">
+        <input type="hidden" id="university_id" name="university_id" th:field="*{id}" required readonly th:value="${university.getId()}">
+
+        <label for="university_name">Название:</label>
+        <input type="text" id="university_name" name="university_name" th:field="*{name}" required th:value="${university.getName()}"><br><br>
+
+        <label for="university_address">Адрес:</label>
+        <input type="text" id="university_address" name="university_address" th:field="*{address}" required th:value="${university.getAddress()}"><br><br>
+
+        <input id="submitButton" type="submit" value="Сохранить" class="btn btn-primary">
+    </form>
+</div>
+
+</body>
+</html>

@@ -11,10 +11,12 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Repository
-public abstract class AbstractDAO<T extends ListBase<T, I>, I extends Serializable> implements BasicDAO<T, I> {
+public abstract class AbstractDAO<T extends ListBase<T, I>, I extends Number> implements BasicDAO<T, I> {
     protected SessionFactory sessionFactory;
 
     protected Class<T> thisClass;
@@ -41,6 +43,16 @@ public abstract class AbstractDAO<T extends ListBase<T, I>, I extends Serializab
             CriteriaQuery<T> query = session.getCriteriaBuilder().createQuery(thisClass);
             query.from(thisClass);
             return session.createQuery(query).getResultList();
+        }
+    }
+
+    public I getMaxId() {
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaQuery<T> query = session.getCriteriaBuilder().createQuery(thisClass);
+            query.from(thisClass);
+            List<T> res = session.createQuery(query).getResultList();
+            res.sort(Comparator.comparingLong(o -> o.getId().longValue()));
+            return res.get(res.size() - 1).getId();
         }
     }
 

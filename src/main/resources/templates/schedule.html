@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Расписание</title>
+</head>
+<body>
+
+<div class="topnav">
+    <a href="index">Домашняя страница</a>
+    <a class="active" href="schedule">Расписание</a>
+    <a href="courses">Курсы</a>
+    <a href="students">Студенты</a>
+    <a href="professors">Лекторы</a>
+    <a href="universities">Университеты</a>
+</div>
+
+<div class="table_style">
+    <form method="get" action="/add_lecture">
+        <button id="add_lecture" type="submit" class="btn btn-primary">Добавить лекцию</button>
+    </form>
+    <br>
+
+    <form method="post" th:object="${time_interval}" th:action="@{/schedule}">
+        <label for="ti_from">От:</label>
+        <input type="date" id="ti_from" name="ti_from" th:field="*{from}" th:value="${time_interval.getFrom()}">
+
+        <label for="ti_to">До:</label>
+        <input type="date" id="ti_to" name="ti_to" th:field="*{to}" th:value="${time_interval.getTo()}">
+
+        <input id="ti_submitButton" type="submit" value="Фильтровать" class="btn btn-primary">
+    </form>
+
+    <table class="table table-bordered table-warning">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Дата</th>
+            <th scope="col"> Время</th>
+            <th scope="col"> Курс</th>
+            <th scope="col"> Лектор</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${lectures.isEmpty()}">
+            <td colspan="6"> На данный период нет ни одного занятия</td>
+        </tr>
+        <tr th:each="lecture : ${lectures}">
+            <td>
+                <a>
+                    <span th:text="${lecture.getDate()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a>
+                    <span th:text="${lecture.getTimeInterval()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/course?id=' + ${lecture.getCourse().getId()}">
+                    <span th:text="${lecture.getCourse().getName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/professor?id=' + ${lecture.getProfessor().getId()}">
+                    <span th:text="${lecture.getProfessor().getFullName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/edit_lecture?id=' + ${lecture.getId()}">
+                    <span th:text="'Ред.'"> </span>
+                </a>
+            </td>
+            <td>
+                <form method="post" id="remove_lecture" action="/remove_lecture">
+                    <input type="hidden" name="id" th:value="${lecture.getId()}"/>
+                    <button id="deleteButton" type="submit" class="btn btn-secondary">X</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

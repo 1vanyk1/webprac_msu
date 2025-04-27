@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Редактировать информацию о студенте</title>
+</head>
+<body>
+
+<div class="table_style">
+    <form method="post" th:object="${student}" th:action="@{/save_student}">
+        <input type="hidden" id="student_id" name="student_id" th:field="*{id}" required readonly th:value="${student.getId()}">
+
+        <label for="student_name">Имя:</label>
+        <input type="text" id="student_name" name="student_name" th:field="*{name}" required th:value="${student.getName()}"><br><br>
+
+        <label for="student_surname">Фамилия:</label>
+        <input type="text" id="student_surname" name="student_surname" th:field="*{surname}" required th:value="${student.getSurname()}"><br><br>
+
+        <label for="student_patronymic">Отчество:</label>
+        <input type="text" id="student_patronymic" name="student_patronymic" th:field="*{patronymic}" th:value="${student.getPatronymic()}"><br><br>
+
+        <label for="student_date">Дата рождения:</label>
+        <input type="date" id="student_date" name="student_date" th:field="*{date}" required th:value="${student.getDate()}"><br><br>
+
+        <input id="submitButton" type="submit" value="Сохранить" class="btn btn-primary">
+    </form>
+</div>
+
+</body>
+</html>

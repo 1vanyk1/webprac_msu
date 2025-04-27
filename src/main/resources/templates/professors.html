@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Лекторы</title>
+</head>
+<body>
+
+<div class="topnav">
+    <a href="index">Домашняя страница</a>
+    <a href="schedule">Расписание</a>
+    <a href="courses">Курсы</a>
+    <a href="students">Студенты</a>
+    <a class="active" href="professors">Лекторы</a>
+    <a href="universities">Университеты</a>
+</div>
+
+<div class="table_style">
+    <form method="get" action="/add_professor">
+        <button id="add_professor" type="submit" class="btn btn-primary">Добавить лектора</button>
+    </form>
+    <br>
+
+    <table class="table table-bordered table-warning">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Фамилие</th>
+            <th scope="col"> Имя</th>
+            <th scope="col"> Отчество</th>
+            <th scope="col"> Дата рождения</th>
+            <th scope="col"> Университет</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${professors.isEmpty()}">
+            <td colspan="6"> В базе пока нет ни одного студента.
+                <form method="get" action="/add_professor">
+                    <button id="add_professor2" type="submit" class="btn btn-primary">Добавить?</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:each="professor : ${professors}">
+            <td>
+                <a th:href="'/professor?id=' + ${professor.getId()}">
+                    <span th:text="${professor.getSurname()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:id="professor_name" th:href="'/professor?id=' + ${professor.getId()}">
+                    <span th:text="${professor.getName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/professor?id=' + ${professor.getId()}">
+                    <span th:text="${professor.getPatronymic()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/professor?id=' + ${professor.getId()}">
+                    <span th:text="${professor.getDate().toString()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/professor?id=' + ${professor.getId()}">
+                    <span th:text="${professor.getUniversity().getName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/edit_professor?id=' + ${professor.getId()}">
+                    <span th:text="'Ред.'"> </span>
+                </a>
+            </td>
+            <td>
+                <form method="post" action="/remove_professor">
+                    <input type="hidden" name="id" th:value="${professor.getId()}"/>
+                    <button id="deleteButton" type="submit" class="btn btn-secondary">X</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

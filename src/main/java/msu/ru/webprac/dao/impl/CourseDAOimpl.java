@@ -1,14 +1,20 @@
 package msu.ru.webprac.dao.impl;
 
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import msu.ru.webprac.dao.CourseDAO;
 import msu.ru.webprac.db.Courses;
+import msu.ru.webprac.db.Lectures;
+import msu.ru.webprac.db.Professors;
 import msu.ru.webprac.db.Students;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -61,5 +67,35 @@ public class CourseDAOimpl extends AbstractDAO<Courses, Long> implements CourseD
             session.persist(course);
             tx.commit();
         }
+    }
+
+    @Override
+    public List<Lectures> getLectures(Long id) {
+        List<Lectures> res;
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaQuery<Lectures> query = session.getCriteriaBuilder().createQuery(Lectures.class);
+            query.distinct(true);
+            Root<Lectures> root = query.from(Lectures.class);
+            query.where(session.getCriteriaBuilder().equal(root.get("course").get("id"), id));
+            res = session.createQuery(query).getResultList();
+        }
+        return res;
+    }
+
+    @Override
+    public Set<Professors> getProfessors(Long id) {
+        Set<Professors> res = new HashSet<>();
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaQuery<Lectures> query = session.getCriteriaBuilder().createQuery(Lectures.class);
+            query.distinct(true);
+            Root<Lectures> root = query.from(Lectures.class);
+            query.where(session.getCriteriaBuilder().equal(root.get("course").get("id"), id));
+
+            List<Lectures> lectures = session.createQuery(query).getResultList();
+            for (Lectures lecture : lectures) {
+                res.add(lecture.getProfessor());
+            }
+        }
+        return res;
     }
 }

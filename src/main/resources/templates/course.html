@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Информация о курсе</title>
+</head>
+<body>
+
+<div class="topnav">
+    <a href="index">Домашняя страница</a>
+    <a href="schedule">Расписание</a>
+    <a class="active" href="courses">Курсы</a>
+    <a href="students">Студенты</a>
+    <a href="professors">Лекторы</a>
+    <a href="universities">Университеты</a>
+</div>
+
+<div class="table_style">
+    <a><b>Название: </b></a>
+    <a><span th:id="course_name" th:text="${course.getName()}"> </span></a>
+    <br>
+    <a><b>Продолжительность (в часах): </b></a>
+    <a><span th:text="${course.getDuration()}"> </span></a>
+    <br>
+    <a><b>Закончен: </b></a>
+    <a>
+        <span th:if="${course.getEnded()}" th:text="'да'"> </span>
+        <span th:else th:text="'нет'"> </span>
+    </a>
+    <br>
+    <a><b>Описание: </b></a>
+    <a><span th:id="course_description" th:text="${course.getDescription()}"> </span></a>
+    <br>
+
+    <form method="get" action="/edit_course">
+        <input type="hidden" name="id" th:value="${course.getId()}"/>
+        <button id="edit_course" type="submit" class="btn btn-primary">Редактировать</button>
+    </form>
+    <form method="get" action="/remove_course">
+        <input type="hidden" name="id" th:value="${course.getId()}"/>
+        <button id="remove_course" type="submit" class="btn btn-primary">Удалить</button>
+    </form>
+</div>
+
+
+
+<div>
+    <div class="table_style">
+        <table class="table table-bordered table-warning">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col"> Дата</th>
+                <th scope="col"> Время</th>
+                <th scope="col"> Лектор</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${lectures.isEmpty()}">
+                <td colspan="6"> На данный период нет ни одного занятия</td>
+            </tr>
+            <tr th:each="lecture : ${lectures}">
+                <td>
+                    <a>
+                        <span th:text="${lecture.getDate()}"> </span>
+                    </a>
+                </td>
+                <td>
+                    <a>
+                        <span th:text="${lecture.getTimeInterval()}"> </span>
+                    </a>
+                </td>
+                <td>
+                    <a th:href="'/professor?id=' + ${lecture.getProfessor().getId()}">
+                        <span th:text="${lecture.getProfessor().getFullName()}"> </span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div>
+    <div>
+        <br>
+        <a><b>Записанные студенты:</b></a>
+        <br>
+    </div>
+    <div>
+        <table class="table table-bordered table-warning">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col"> Фамилие</th>
+                <th scope="col"> Имя</th>
+                <th scope="col"> Отчество</th>
+                <th scope="col"> Дата рождения</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${students.isEmpty()}">
+                <td colspan="6">Нет студентов</td>
+            </tr>
+            <tr th:each="student : ${students}">
+                <td>
+                    <a th:href="'/student?id=' + ${student.getId()}">
+                        <span th:text="${student.getSurname()}"> </span>
+                    </a>
+                </td>
+                <td>
+                    <a th:id="student_name" th:href="'/student?id=' + ${student.getId()}">
+                        <span th:text="${student.getName()}"> </span>
+                    </a>
+                </td>
+                <td>
+                    <a th:href="'/student?id=' + ${student.getId()}">
+                        <span th:text="${student.getPatronymic()}"> </span>
+                    </a>
+                </td>
+                <td>
+                    <a th:href="'/student?id=' + ${student.getId()}">
+                        <span th:text="${student.getDate().toString()}"> </span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <br>
+        <a><b>Лекторы:</b></a>
+        <br>
+    </div>
+    <div>
+        <table class="table table-bordered table-warning">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col"> Фамилие</th>
+                <th scope="col"> Имя</th>
+                <th scope="col"> Отчество</th>
+                <th scope="col"> Дата рождения</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${professors.isEmpty()}">
+                <td colspan="6">Нет лекторов</td>
+            </tr>
+            <tr th:each="professor : ${professors}">
+                <td>
+                    <a th:href="'/professor?id=' + ${professor.getId()}">
+                        <span th:text="${professor.getSurname()}"> </span>
+                    </a>
+                </td>
+                <td>
+                    <a th:id="professor_name" th:href="'/professor?id=' + ${professor.getId()}">
+                        <span th:text="${professor.getName()}"> </span>
+                    </a>
+                </td>
+                <td>
+                    <a th:href="'/professor?id=' + ${professor.getId()}">
+                        <span th:text="${professor.getPatronymic()}"> </span>
+                    </a>
+                </td>
+                <td>
+                    <a th:href="'/professor?id=' + ${professor.getId()}">
+                        <span th:text="${professor.getDate().toString()}"> </span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

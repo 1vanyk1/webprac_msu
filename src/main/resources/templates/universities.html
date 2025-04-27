@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/topnav.css" th:href="@{/css/topnav.css}" />
+    <title>Университеты</title>
+</head>
+<body>
+
+<div class="topnav">
+    <a href="index">Домашняя страница</a>
+    <a href="schedule">Расписание</a>
+    <a href="courses">Курсы</a>
+    <a href="students">Студенты</a>
+    <a href="professors">Лекторы</a>
+    <a class="active" href="universities">Университеты</a>
+</div>
+
+<div class="table_style">
+    <form method="get" action="/add_university">
+        <button id="add_university" type="submit" class="btn btn-primary">Добавить университет</button>
+    </form>
+    <br>
+
+    <table class="table table-bordered table-warning">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Название</th>
+            <th scope="col"> Адрес</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${universities.isEmpty()}">
+            <td colspan="6"> В базе пока нет ни одного университета.
+                <form method="get" action="/add_university">
+                    <button id="add_university2" type="submit" class="btn btn-primary">Добавить?</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:each="university : ${universities}">
+            <td>
+                <a>
+                    <span th:text="${university.getName()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a>
+                    <span th:text="${university.getAddress()}"> </span>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/edit_university?id=' + ${university.getId()}">
+                    <span th:text="'Ред.'"> </span>
+                </a>
+            </td>
+            <td>
+                <form method="post" action="/remove_university">
+                    <input type="hidden" name="id" th:value="${university.getId()}"/>
+                    <button id="deleteButton" type="submit" class="btn btn-secondary">X</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

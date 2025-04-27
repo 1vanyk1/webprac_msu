@@ -1,15 +1,17 @@
 package msu.ru.webprac.dao.impl;
 
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import msu.ru.webprac.dao.StudentDAO;
 import msu.ru.webprac.db.Courses;
+import msu.ru.webprac.db.Lectures;
 import msu.ru.webprac.db.Students;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class StudentDAOimpl extends AbstractDAO<Students, Long> implements StudentDAO {
@@ -61,5 +63,19 @@ public class StudentDAOimpl extends AbstractDAO<Students, Long> implements Stude
             session.persist(student);
             tx.commit();
         }
+    }
+
+    public List<Lectures> getLectures(Long id) {
+        List<Lectures> res = new ArrayList<>();
+        try (Session session = sessionFactory.openSession()) {
+            for (Courses course: session.get(Students.class, id).getCourses()) {
+                CriteriaQuery<Lectures> query = session.getCriteriaBuilder().createQuery(Lectures.class);
+                Root<Lectures> root = query.from(Lectures.class);
+                query.where(session.getCriteriaBuilder().equal(root.get("course").get("id"), course.getId()));
+                res.addAll(session.createQuery(query).getResultList());
+            }
+        }
+        Collections.sort(res);
+        return res;
     }
 }

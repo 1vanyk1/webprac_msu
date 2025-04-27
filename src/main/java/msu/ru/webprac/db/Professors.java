@@ -5,7 +5,7 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "professors")
-public class Professors implements ListBase<Professors, Long> {
+public class Professors implements ListBase<Professors, Long>, Comparable<Professors> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "professor_id")
@@ -95,5 +95,26 @@ public class Professors implements ListBase<Professors, Long> {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    public int compareTo(Professors other) {
+        int tmp = this.surname.compareTo(other.surname);
+        if (tmp != 0)
+            return tmp;
+        tmp = this.name.compareTo(other.name);
+        if (tmp != 0)
+            return tmp;
+        tmp = this.patronymic.compareTo(other.patronymic);
+        if (tmp != 0)
+            return tmp;
+        tmp = this.date.compareTo(other.date);
+        if (tmp != 0)
+            return tmp;
+        return this.id.compareTo(other.id);
+    }
+
+    public String getFullName() {
+        return surname + " " + name + " " + patronymic;
     }
 }

@@ -1,11 +1,16 @@
 package msu.ru.webprac.dao.impl;
 
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import msu.ru.webprac.dao.ProfessorDAO;
+import msu.ru.webprac.db.Lectures;
 import msu.ru.webprac.db.Professors;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class ProfessorDAOimpl extends AbstractDAO<Professors, Long> implements ProfessorDAO {
@@ -27,5 +32,16 @@ public class ProfessorDAOimpl extends AbstractDAO<Professors, Long> implements P
             query.executeUpdate();
             tx.commit();
         }
+    }
+
+    public List<Lectures> getLecturesForProfessor(Long id) {
+        List<Lectures> res;
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaQuery<Lectures> query = session.getCriteriaBuilder().createQuery(Lectures.class);
+            Root<Lectures> root = query.from(Lectures.class);
+            query.where(session.getCriteriaBuilder().equal(root.get("professor").get("id"), id));
+            res = session.createQuery(query).getResultList();
+        }
+        return res;
     }
 }

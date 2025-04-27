@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "universities")
-public class Universities implements ListBase<Universities, Long> {
+public class Universities implements ListBase<Universities, Long>, Comparable<Universities> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "university_id")
@@ -54,5 +54,16 @@ public class Universities implements ListBase<Universities, Long> {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public int compareTo(Universities other) {
+        int tmp = this.name.compareTo(other.name);
+        if (tmp != 0)
+            return tmp;
+        tmp = this.address.compareTo(other.address);
+        if (tmp != 0)
+            return tmp;
+        return this.id.compareTo(other.id);
     }
 }
